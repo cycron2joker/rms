@@ -85,6 +85,8 @@ module Rms
         raise err
 
       rescue => other_err
+puts other_err
+puts other_err.backtrace
         login_err = LoginFailedError.new("error occured:[#{step}]")
         login_err.cause = other_err
         raise login_err
