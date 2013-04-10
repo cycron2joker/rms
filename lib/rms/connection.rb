@@ -38,7 +38,7 @@ module Rms
 			self.max_history = DEF_MAX_HISTORY
     end
 
-    def Connection.auth_parameter(auth1_id ,aut1_pwd ,auth2_id ,auth2_pwd)
+    def Connection.auth_parameter(auth1_id ,auth1_pwd ,auth2_id ,auth2_pwd)
       {:AUTH1_ID   => auth1_id,
         :AUTH1_PWD => auth1_pwd,
         :AUTH2_ID  => auth2_id,
