@@ -7,7 +7,7 @@ module Rms
   class Connection < ::Mechanize
 
     DEF_TIMEOUT     = 180
-    DEF_AGENT       = 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)'
+    DEF_AGENT       = 'Windows IE 8'
     DEF_MAX_HISTORY	= 1
 
     DEF_ENCODING = 'euc-jp'
@@ -17,7 +17,7 @@ module Rms
 
     def initialize(auth)
 
-      super(nil)
+      super()
 
       if !auth || !auth.is_a?(Hash) || auth.empty? ||
           !auth[:AUTH1_ID] || !auth[:AUTH1_ID].is_a?(String) ||
@@ -36,6 +36,8 @@ module Rms
 			self.read_timeout = DEF_TIMEOUT
 			self.user_agent_alias = DEF_AGENT
 			self.max_history = DEF_MAX_HISTORY
+
+      self
     end
 
     def Connection.auth_parameter(auth1_id ,auth1_pwd ,auth2_id ,auth2_pwd)
