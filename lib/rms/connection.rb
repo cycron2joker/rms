@@ -4,7 +4,7 @@ module Rms
     attr_accessor :cause
   end
 
-  class Connection < Mechanize
+  class Connection < ::Mechanize
 
     DEF_TIMEOUT     = 180
     DEF_AGENT       = 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)'
