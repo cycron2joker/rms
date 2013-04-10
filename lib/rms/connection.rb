@@ -7,7 +7,7 @@ module Rms
   class Connection < ::Mechanize
 
     DEF_TIMEOUT     = 180
-    DEF_AGENT       = 'Windows IE 8'
+    DEF_AGENT       = 'Windows IE 7'
     DEF_MAX_HISTORY	= 1
 
     DEF_ENCODING = 'euc-jp'
