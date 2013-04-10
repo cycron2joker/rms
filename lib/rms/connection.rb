@@ -73,7 +73,7 @@ module Rms
         step = "notice-page"
         main_menu_page = set_enc(notice_page.forms[0].click)
         
-        unless main_menu_page.uri.to_s != VAL_MAINMENU_SUCCESS_URI
+        if main_menu_page.uri.to_s != VAL_MAINMENU_SUCCESS_URI
           raise LoginFailedError.new('Mainmenu Move failed.')
         end
 
@@ -95,6 +95,7 @@ module Rms
     def get(*params)
       set_enc(super(*params))
     end
+
 
     def set_enc(page)
 			if page.body.to_s.tosjis =~ /charset=(.*)\"/
