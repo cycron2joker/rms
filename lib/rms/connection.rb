@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module Rms
 
   class LoginFailedError < Exception
@@ -13,6 +14,8 @@ module Rms
     DEF_ENCODING = 'euc-jp'
 
     LOGIN_URL = "https://glogin.rms.rakuten.co.jp/?sp_id=1"
+
+    WRD_R_LOGIN_SUCCESS = 'R-Login IDの認証を行いました。'.tosjis
 
 
     def initialize(auth1_id ,auth1_pwd ,auth2_id ,auth2_pwd)
@@ -31,17 +34,28 @@ module Rms
       self
     end
 
-    # login and mover to top menu
+    # login and move to top menu
     def connect
 
-      login_page = get(LOGIN_URL)
 
       # R-login
-      form = login_page.forms[0]
+      login_page1 = get(LOGIN_URL)
+      form = login_page1.forms[0]
       form.field_with(:name => 'login_id').value = @auth_parameters[:AUTH1_ID]
       form.field_with(:name => 'passwd').value = @auth_parameters[:AUTH1_PWD]
 
-      page = set_enc(form.click_button)
+      login_page2 = set_enc(form.click_button)
+      unless login_page2.body.to_s.tosjis.index(WRD_R_LOGIN_SUCCESS)
+        raise LoginFailedError.new('R-Login failed.')
+      end
+
+      # Rakuten Member Login
+			form = login_page2.forms[0]
+			form.field_with(:name => 'user_id').value = @auth_parameters[:AUTH2_ID]
+			form.field_with(:name => 'user_passwd').value = @auth_parameters[:AUTH2_PWD]
+			announce_page = set_enc(form.click_button)
+
+
 			
 
     end
