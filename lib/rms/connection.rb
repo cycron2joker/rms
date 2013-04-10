@@ -17,7 +17,7 @@ module Rms
 
     def initialize(auth)
 
-      super
+      super(nil)
 
       if !auth || !auth.is_a?(Hash) || auth.empty? ||
           !auth[:AUTH1_ID] || !auth[:AUTH1_ID].is_a?(String) ||
