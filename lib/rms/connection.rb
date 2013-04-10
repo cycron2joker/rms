@@ -15,36 +15,20 @@ module Rms
     LOGIN_URL = "https://glogin.rms.rakuten.co.jp/?sp_id=1"
 
 
-    def initialize(auth)
+    def initialize(auth1_id ,auth1_pwd ,auth2_id ,auth2_pwd)
 
       super()
 
-      if !auth || !auth.is_a?(Hash) || auth.empty? ||
-          !auth[:AUTH1_ID] || !auth[:AUTH1_ID].is_a?(String) ||
-          auth[:AUTH1_ID].strip == '' ||
-          !auth[:AUTH1_PWD] || !auth[:AUTH1_PWD].is_a?(String) ||
-          auth[:AUTH1_PWD].strip == '' ||
-          !auth[:AUTH2_ID] || !auth[:AUTH2_ID].is_a?(String) ||
-          auth[:AUTH2_ID].strip == '' ||
-          !auth[:AUTH2_PWD] || !auth[:AUTH2_PWD].is_a?(String) ||
-          auth[:AUTH2_PWD].strip == ''
-        raise "invalid auth_params"
-      end
-
-      @auth_parameters = auth
+      @auth_parameters = auth_parameter(auth1_id,
+                                        auth1_pwd,
+                                        auth2_id,
+                                        auth2_pwd)
 
 			self.read_timeout = DEF_TIMEOUT
 			self.user_agent_alias = DEF_AGENT
 			self.max_history = DEF_MAX_HISTORY
 
       self
-    end
-
-    def Connection.auth_parameter(auth1_id ,auth1_pwd ,auth2_id ,auth2_pwd)
-      {:AUTH1_ID   => auth1_id,
-        :AUTH1_PWD => auth1_pwd,
-        :AUTH2_ID  => auth2_id,
-        :AUTH2_PWD => auth2_pwd}
     end
 
     # login and mover to top menu
@@ -79,6 +63,27 @@ module Rms
 			end
       page
 		end
+
+
+
+
+    def auth_parameter(auth1_id ,auth1_pwd ,auth2_id ,auth2_pwd)
+
+      if !auth1_id || !auth1_id.is_a?(String) || auth1_id.strip == '' ||
+          !auth1_pwd || !auth1_pwd.is_a?(String) || auth1_pwd.strip == '' ||
+          !auth2_id || !auth2_id.is_a?(String) || auth2_pwd.strip == '' ||
+          !auth2_pwd || !auth2_pwd.is_a?(String) || auth2_pwd.strip == ''
+        raise "invalid auth_params"
+      end
+
+      {:AUTH1_ID   => auth1_id,
+        :AUTH1_PWD => auth1_pwd,
+        :AUTH2_ID  => auth2_id,
+        :AUTH2_PWD => auth2_pwd}
+    end
+
+
+
 
   end
 
