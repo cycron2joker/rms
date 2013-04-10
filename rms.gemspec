@@ -14,4 +14,9 @@ Gem::Specification.new do |gem|
   gem.name          = "rms"
   gem.require_paths = ["lib"]
   gem.version       = Rms::VERSION
+
+	# dependency
+	gem.add_dependency('rspec' ,'>= 2.9.0')
+	gem.add_dependency('mechanize', '>= 1.0.0')
+
 end
