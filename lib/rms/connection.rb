@@ -15,13 +15,17 @@ module Rms
 
     LOGIN_URL = "https://glogin.rms.rakuten.co.jp/?sp_id=1"
 
+    VAL_R_LOGIN_SUCCESS = "BizAuthUserAttest"
+    VAL_R_MEM_LOGIN_SUCCESS = "BizAuthAnnounce"
+
+    VAL_ANNOUNCE_SUCCESS_URI = "https://mainmenu.rms.rakuten.co.jp/?act=login&sp_id=1"
+
+
     WRD_R_LOGIN_SUCCESS = 'R-Login IDの認証を行いました。'.tosjis
 
 
     def initialize(auth1_id ,auth1_pwd ,auth2_id ,auth2_pwd)
-
       super()
-
       @auth_parameters = auth_parameter(auth1_id,
                                         auth1_pwd,
                                         auth2_id,
@@ -30,12 +34,12 @@ module Rms
 			self.read_timeout = DEF_TIMEOUT
 			self.user_agent_alias = DEF_AGENT
 			self.max_history = DEF_MAX_HISTORY
-
       self
     end
 
     # login and move to top menu
     def connect
+      step = "r-login"
 
 
       # R-login
@@ -44,19 +48,40 @@ module Rms
       form.field_with(:name => 'login_id').value = @auth_parameters[:AUTH1_ID]
       form.field_with(:name => 'passwd').value = @auth_parameters[:AUTH1_PWD]
 
+
+#<input type="hidden" name="action" value="BizAuthCustomerAttest">
+#<input type="hidden" name="action" value="BizAuthUserAttest">
+
       login_page2 = set_enc(form.click_button)
-      unless login_page2.body.to_s.tosjis.index(WRD_R_LOGIN_SUCCESS)
+			form = login_page2.forms[0]
+
+			unless form.field_with(:name => 'action').value.to_s == VAL_R_LOGIN_SUCCESS
         raise LoginFailedError.new('R-Login failed.')
       end
 
+#      unless login_page2.body.to_s.tosjis.index(WRD_R_LOGIN_SUCCESS)
+#      end
+
       # Rakuten Member Login
-			form = login_page2.forms[0]
+      step = "rmember-login"
 			form.field_with(:name => 'user_id').value = @auth_parameters[:AUTH2_ID]
 			form.field_with(:name => 'user_passwd').value = @auth_parameters[:AUTH2_PWD]
 			announce_page = set_enc(form.click_button)
 
+      step = "announce-page"
+			form = announce_page.forms[0]
+			unless form.field_with(:name => 'action').value.to_s == VAL_R_MEM_LOGIN_SUCCESS
+        raise LoginFailedError.new('Raketen Member Login failed.')
+      end
 
-			
+			notice_page = set_enc(form.click_button)
+
+      step = "notice-page"
+			unless notice_page.uri.to_s.index(VAL_ANNOUNCE_SUCCESS_URI)
+        raise LoginFailedError.new('Notice Page Move failed.')
+			end
+
+			notice_page
 
     end
 
