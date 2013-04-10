@@ -78,7 +78,7 @@ module Rms
         end
 
 
-        # TODO extract url for sigle sign-on
+        # TODO extract url-list for sigle sign-on
         main_menu_page
 
       rescue LoginFailedError => err
