@@ -71,7 +71,7 @@ module Rms
         end
 
         step = "notice-page"
-        main_menu_page = set_enc(notice_page.forms[0].click)
+        main_menu_page = set_enc(notice_page.forms[0].click_button)
         
         if main_menu_page.uri.to_s != VAL_MAINMENU_SUCCESS_URI
           raise LoginFailedError.new('Mainmenu Move failed.')
@@ -85,8 +85,6 @@ module Rms
         raise err
 
       rescue => other_err
-puts other_err
-puts other_err.backtrace
         login_err = LoginFailedError.new("error occured:[#{step}]")
         login_err.cause = other_err
         raise login_err
