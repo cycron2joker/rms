@@ -11,7 +11,7 @@ class Mechanize::Form
   end
 
   def wrap_rms_page(page)
-    page.extend RMS::RmsPAge
+    page.extend ::RMS::RmsPAge
     page.set_enc
   end
 
