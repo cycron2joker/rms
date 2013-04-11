@@ -1,6 +1,6 @@
 # Rms
 
-TODO: Write a gem description
+Connect and Operate Rakuten RMS.
 
 ## Installation
 
@@ -18,7 +18,15 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+require 'rubygems'
+require "rms"
+
+auth = ["first_auth_uid" , "first_auth_pwd" ,"second_auth_uid" ,"second_auth_pwd"]
+
+session = Rms::Connection.new(*auth)
+
+session.open
+
 
 ## Contributing
 
