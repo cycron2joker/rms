@@ -46,7 +46,7 @@ module Rms
       begin 
 
         # R-login
-        login_page1 = get(LOGIN_URL)
+        login_page1 = get_with_enc(LOGIN_URL)
         form = login_page1.forms[0]
         form.field_with(:name => 'login_id').value = @auth_parameters[:AUTH1_ID]
         form.field_with(:name => 'passwd').value = @auth_parameters[:AUTH1_PWD]
@@ -77,13 +77,14 @@ module Rms
         end
 
         step = "notice-page"
-
         main_menu_page = notice_page.forms[0].click_submit_button
         
         if main_menu_page.uri.to_s != VAL_MAINMENU_SUCCESS_URI
           raise LoginFailedError.new('Mainmenu Move failed.')
         end
 
+
+        # single sign-on for logon rms sub-system
 #      main_menu_html = @current_page.body.to_s.tosjis
 #      lst_img_tag = main_menu_html.scan(/<img src=\"(https:\/\/[^\"]+)\"/i)
 #      raise "parse failed for single sign-on" if lst_img_tag.empty?
@@ -96,13 +97,11 @@ module Rms
 #        end
 #      }
 
-        # single sign-on for logon rms sub-system
-
         # シングルサインオン用各機能ログイン処理
         main_menu_page.search('img').each {|img|
           path = img.attributes['src'].to_s 
           if is_single_signon_path(path)
-            super.get(path)
+            get(path)
             sleep(0.3)
           end
         }
@@ -123,29 +122,12 @@ module Rms
     end
 
     # page get and setup encoding.
-    def get(*params)
-      #set_enc(super(*params))
-      page = super(*params)
+    def get_with_enc(*params)
+      page = get(*params)
       page.extend RmsPage
       @last_page = page.set_enc
       page
     end
-
-    # setup page encoding
-    # todo move to utility class
-    def set_enc(page)
-      if page.body.to_s.tosjis =~ /charset=(.*)\"/
-        ec = $1
-        if ec =~ /^[xX]\-(.*)/
-          ec = $1
-        end
-        page.encoding = ec
-      else
-        page.encoding = DEF_ENCODING
-      end
-      page
-    end
-
 
     # judge url of sigle sign-on
     def is_single_signon_path(path)
