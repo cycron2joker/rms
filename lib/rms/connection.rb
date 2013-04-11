@@ -59,20 +59,23 @@ module Rms
         step = "rmember-login"
         form.field_with(:name => 'user_id').value = @auth_parameters[:AUTH2_ID]
         form.field_with(:name => 'user_passwd').value = @auth_parameters[:AUTH2_PWD]
-        announce_page = set_enc(form.click_button)
+#        announce_page = set_enc(form.click_button)
+        announce_page = form.click_submit_button
         form = announce_page.forms[0]
         unless form.field_with(:name => 'action').value.to_s == VAL_R_MEM_LOGIN_SUCCESS
           raise LoginFailedError.new('Raketen Member Login failed.')
         end
 
         step = "announce-page"
-        notice_page = set_enc(form.click_button)
+#        notice_page = set_enc(form.click_button)
+        notice_page = form.click_submit_button
         unless notice_page.uri.to_s.index(VAL_ANNOUNCE_SUCCESS_URI)
           raise LoginFailedError.new('Notice Page Move failed.')
         end
 
         step = "notice-page"
-        main_menu_page = set_enc(notice_page.forms[0].click_button)
+#        main_menu_page = set_enc(notice_page.forms[0].click_button)
+        main_menu_page = notice_page.forms[0].click_submit_button
         
         if main_menu_page.uri.to_s != VAL_MAINMENU_SUCCESS_URI
           raise LoginFailedError.new('Mainmenu Move failed.')
