@@ -77,8 +77,6 @@ module Rms
           raise LoginFailedError.new('Mainmenu Move failed.')
         end
 
-        # TODO extract url-list for sigle sign-on
-
 #      main_menu_html = @current_page.body.to_s.tosjis
 #      lst_img_tag = main_menu_html.scan(/<img src=\"(https:\/\/[^\"]+)\"/i)
 #      raise "parse failed for single sign-on" if lst_img_tag.empty?
@@ -87,12 +85,11 @@ module Rms
 #        path = tag[0]
 #        if is_single_signon_path(path)
 #                                       @rms_session.get(path)
-#                                       @logger.debug path
 #                                       sleep(0.3)
 #        end
 #      }
 
-
+        # single sign-on for logon rms sub-system
 
 
 
@@ -115,7 +112,10 @@ module Rms
 
     # page get
     def get(*params)
-      set_enc(super(*params))
+      #set_enc(super(*params))
+      page = super(*params)
+      page.extend RmsPage
+      page.set_enc
     end
 
     # setup page encoding
