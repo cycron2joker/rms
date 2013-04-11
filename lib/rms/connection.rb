@@ -37,7 +37,7 @@ module Rms
     end
 
     # login and move to rms mainmenu
-    def connect
+    def open
 
       step = "r-login"
 
@@ -48,7 +48,8 @@ module Rms
         form.field_with(:name => 'login_id').value = @auth_parameters[:AUTH1_ID]
         form.field_with(:name => 'passwd').value = @auth_parameters[:AUTH1_PWD]
 
-        login_page2 = set_enc(form.click_button)
+        login_page2 = form.click_submit_button
+#        login_page2 = set_enc(form.click_button)
         form = login_page2.forms[0]
         unless form.field_with(:name => 'action').value.to_s == VAL_R_LOGIN_SUCCESS
           raise LoginFailedError.new('R-Login failed.')
