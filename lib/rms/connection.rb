@@ -22,6 +22,8 @@ module Rms
 
     VAL_MAINMENU_SUCCESS_URI = "https://mainmenu.rms.rakuten.co.jp/"
 
+    attr_reader :last_page
+
 
     def initialize(auth1_id ,auth1_pwd ,auth2_id ,auth2_pwd)
       super()
@@ -42,6 +44,7 @@ module Rms
       step = "r-login"
 
       begin 
+
         # R-login
         login_page1 = get(LOGIN_URL)
         form = login_page1.forms[0]
@@ -49,7 +52,7 @@ module Rms
         form.field_with(:name => 'passwd').value = @auth_parameters[:AUTH1_PWD]
 
         login_page2 = form.click_submit_button
-#        login_page2 = set_enc(form.click_button)
+
         form = login_page2.forms[0]
         unless form.field_with(:name => 'action').value.to_s == VAL_R_LOGIN_SUCCESS
           raise LoginFailedError.new('R-Login failed.')
@@ -59,7 +62,7 @@ module Rms
         step = "rmember-login"
         form.field_with(:name => 'user_id').value = @auth_parameters[:AUTH2_ID]
         form.field_with(:name => 'user_passwd').value = @auth_parameters[:AUTH2_PWD]
-#        announce_page = set_enc(form.click_button)
+
         announce_page = form.click_submit_button
         form = announce_page.forms[0]
         unless form.field_with(:name => 'action').value.to_s == VAL_R_MEM_LOGIN_SUCCESS
@@ -67,14 +70,14 @@ module Rms
         end
 
         step = "announce-page"
-#        notice_page = set_enc(form.click_button)
+
         notice_page = form.click_submit_button
         unless notice_page.uri.to_s.index(VAL_ANNOUNCE_SUCCESS_URI)
           raise LoginFailedError.new('Notice Page Move failed.')
         end
 
         step = "notice-page"
-#        main_menu_page = set_enc(notice_page.forms[0].click_button)
+
         main_menu_page = notice_page.forms[0].click_submit_button
         
         if main_menu_page.uri.to_s != VAL_MAINMENU_SUCCESS_URI
@@ -95,15 +98,20 @@ module Rms
 
         # single sign-on for logon rms sub-system
 
+        # シングルサインオン用各機能ログイン処理
+        main_menu_page.search('img').each {|img|
+          path = img.attributes['src'].to_s 
+          if is_single_signon_path(path)
+            get(path)
+            sleep(0.3)
+          end
+        }
 
-
-
-
-        main_menu_page
+        @last_page = main_menu_page
+        self
 
       rescue LoginFailedError => err
         raise err
-
       rescue => other_err
         warn "error occured step:[#{step}]"
         raise other_err
@@ -119,7 +127,8 @@ module Rms
       #set_enc(super(*params))
       page = super(*params)
       page.extend RmsPage
-      page.set_enc
+      @last_page = page.set_enc
+      page
     end
 
     # setup page encoding
