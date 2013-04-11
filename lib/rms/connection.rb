@@ -36,7 +36,7 @@ module Rms
       self
     end
 
-    # login and move to top menu
+    # login and move to rms mainmenu
     def connect
 
       step = "r-login"
@@ -77,42 +77,71 @@ module Rms
           raise LoginFailedError.new('Mainmenu Move failed.')
         end
 
-
         # TODO extract url-list for sigle sign-on
+
+#      main_menu_html = @current_page.body.to_s.tosjis
+#      lst_img_tag = main_menu_html.scan(/<img src=\"(https:\/\/[^\"]+)\"/i)
+#      raise "parse failed for single sign-on" if lst_img_tag.empty?
+#      lst_img_tag2 = []
+#      lst_img_tag.select {|tag|
+#        path = tag[0]
+#        if is_single_signon_path(path)
+#                                       @rms_session.get(path)
+#                                       @logger.debug path
+#                                       sleep(0.3)
+#        end
+#      }
+
+
+
+
+
+
+
         main_menu_page
 
       rescue LoginFailedError => err
         raise err
 
       rescue => other_err
-        login_err = LoginFailedError.new("error occured:[#{step}]")
-        login_err.cause = other_err
-        raise login_err
+        warn "error occured step:[#{step}]"
+        raise other_err
       end
     end
 
+    def logout
+      # TODO implement
+    end
 
+    # page get
     def get(*params)
       set_enc(super(*params))
     end
 
-
+    # setup page encoding
+    # todo move to utility class
     def set_enc(page)
-			if page.body.to_s.tosjis =~ /charset=(.*)\"/
+      if page.body.to_s.tosjis =~ /charset=(.*)\"/
         ec = $1
         if ec =~ /^[xX]\-(.*)/
           ec = $1
         end
-				page.encoding = ec
-			else
-				page.encoding = DEF_ENCODING
-			end
+        page.encoding = ec
+      else
+        page.encoding = DEF_ENCODING
+      end
       page
-		end
+    end
 
 
+    # judge url of sigle sign-on
+    def is_single_signon_path(path)
+      path.index('login?') || path.index('/auth/?') ||
+        path.index('m_login.cgi?') || path.index('RBLogin') ||
+        path.index('entrance.cgi?')
+    end
 
-
+    # generate auth-parameter
     def auth_parameter(auth1_id ,auth1_pwd ,auth2_id ,auth2_pwd)
 
       if !auth1_id || !auth1_id.is_a?(String) || auth1_id.strip == '' ||
