@@ -3,7 +3,7 @@ require "kconv"
 require "mechanize"
 require "rms/version"
 require "rms/connection"
-require "rms/page"
+require "rms/rms_page"
 
 module Rms
 end
