@@ -102,7 +102,7 @@ module Rms
         main_menu_page.search('img').each {|img|
           path = img.attributes['src'].to_s 
           if is_single_signon_path(path)
-            get(path)
+            super.get(path)
             sleep(0.3)
           end
         }
@@ -122,7 +122,7 @@ module Rms
       # TODO implement
     end
 
-    # page get
+    # page get and setup encoding.
     def get(*params)
       #set_enc(super(*params))
       page = super(*params)
