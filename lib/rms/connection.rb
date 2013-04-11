@@ -22,6 +22,11 @@ module Rms
 
     VAL_MAINMENU_SUCCESS_URI = "https://mainmenu.rms.rakuten.co.jp/"
 
+    URL_LOGOUT = "https://mainmenu.rms.rakuten.co.jp/?act=logout"
+
+    URL_MAIN_MENU = VAL_MAINMENU_SUCCESS_URI
+
+
     attr_reader :last_page
 
 
@@ -35,6 +40,9 @@ module Rms
 			self.read_timeout = DEF_TIMEOUT
 			self.user_agent_alias = DEF_AGENT
 			self.max_history = DEF_MAX_HISTORY
+
+      @open_rms = false
+
       self
     end
 
@@ -97,7 +105,6 @@ module Rms
 #        end
 #      }
 
-        # シングルサインオン用各機能ログイン処理
         main_menu_page.search('img').each {|img|
           path = img.attributes['src'].to_s 
           if is_single_signon_path(path)
@@ -106,9 +113,9 @@ module Rms
           end
         }
 
+        @open_rms = true
         @last_page = main_menu_page
         self
-
       rescue LoginFailedError => err
         raise err
       rescue => other_err
@@ -117,8 +124,20 @@ module Rms
       end
     end
 
-    def logout
-      # TODO implement
+
+    def open?
+      @open_rms
+    end
+
+    # logout from rms.
+    def close
+      @open_rms = false
+      get_with_enc(URL_LOGOUT)
+    end
+
+    # call  rms mainmenu
+    def move_to_main_menu
+      get_with_enc(URL_MAIN_MENU)
     end
 
     # page get and setup encoding.
