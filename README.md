@@ -20,6 +20,7 @@ Or install it yourself as:
 ## Usage
 
 require 'rubygems'
+
 require "rms"
 
 auth = ["first_auth_uid" , "first_auth_pwd" ,"second_auth_uid" ,"second_auth_pwd"]

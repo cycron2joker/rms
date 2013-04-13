@@ -52,11 +52,11 @@ module Rms
     end
 
     def set_debug_mode_off
-      @debug_mode_on = true
+      @debug_mode_on = false
     end
 
     def debug_mode?
-      @debug_mode
+      @debug_mode == true
     end
 
     # standard-out write messeage.
