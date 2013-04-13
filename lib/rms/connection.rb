@@ -42,41 +42,69 @@ module Rms
 			self.max_history = DEF_MAX_HISTORY
 
       @open_rms = false
+      @debug_mode = nil
 
       self
+    end
+
+    def set_debug_mode_on
+      @debug_mode_on = true
+    end
+
+    def set_debug_mode_off
+      @debug_mode_on = true
+    end
+
+    def debug_mode?
+      @debug_mode
+    end
+
+    # standard-out write messeage.
+    def debug(msg)
+      tm = Time.now.strftime("[%Y-%m-%d %H:%M:%S] ")
+      if debug_mode?
+        if msg
+          puts "#{tm}#{(msg.is_a?(String) ? msg : msg.to_s)}"
+        else
+          puts "#{tm}nil"
+        end
+      end
     end
 
     # login and move to rms mainmenu
     def open
 
       step = "r-login"
-
       begin 
 
         # R-login
-#        login_page1 = get_rms_page(LOGIN_URL)
+        debug "R-Login start"
         login_page1 = get_rms_page(LOGIN_URL)
         form = login_page1.forms[0]
         form.field_with(:name => 'login_id').value = @auth_parameters[:AUTH1_ID]
         form.field_with(:name => 'passwd').value = @auth_parameters[:AUTH1_PWD]
 
+        debug "R-Login first auth execute."
         login_page2 = form.click_submit_button
 
         form = login_page2.forms[0]
         unless form.field_with(:name => 'action').value.to_s == VAL_R_LOGIN_SUCCESS
           raise LoginFailedError.new('R-Login failed.')
         end
+        debug "R-Login first auth successed."
 
         # Rakuten Member Login
         step = "rmember-login"
         form.field_with(:name => 'user_id').value = @auth_parameters[:AUTH2_ID]
         form.field_with(:name => 'user_passwd').value = @auth_parameters[:AUTH2_PWD]
 
+        debug "R-Member login second auth execute."
         announce_page = form.click_submit_button
         form = announce_page.forms[0]
         unless form.field_with(:name => 'action').value.to_s == VAL_R_MEM_LOGIN_SUCCESS
           raise LoginFailedError.new('Raketen Member Login failed.')
         end
+        debug "R-Member second auth successed."
 
         step = "announce-page"
 
@@ -84,6 +112,7 @@ module Rms
         unless notice_page.uri.to_s.index(VAL_ANNOUNCE_SUCCESS_URI)
           raise LoginFailedError.new('Notice Page Move failed.')
         end
+        debug "rms announce page passed."
 
         step = "notice-page"
         main_menu_page = notice_page.forms[0].click_submit_button
@@ -92,6 +121,7 @@ module Rms
           raise LoginFailedError.new('Mainmenu Move failed.')
         end
 
+        debug "rms notice page passed, and main menu page called"
 
         # single sign-on for logon rms sub-system
 #      main_menu_html = @current_page.body.to_s.tosjis
@@ -106,6 +136,7 @@ module Rms
 #        end
 #      }
 
+        debug "single sign-on start."
         main_menu_page.search('img').each {|img|
           path = img.attributes['src'].to_s 
           if is_single_signon_path(path)
@@ -113,6 +144,7 @@ module Rms
             sleep(0.3)
           end
         }
+        debug "single sign-on end."
 
         @open_rms = true
         @last_page = main_menu_page
