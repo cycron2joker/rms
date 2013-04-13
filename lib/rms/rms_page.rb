@@ -20,6 +20,20 @@ module Rms
       self
     end
 
+    def RmsPage.rmsnize(page)
+      begin
+        page.extend RmsPage
+        RmsForm.rmsnize(page.set_enc)
+      rescue
+      end
+      page
+    end
+
+
   end
 
 end
+
+
+
+
