@@ -54,7 +54,7 @@ module Rms
       begin 
 
         # R-login
-#        login_page1 = get_with_enc(LOGIN_URL)
+#        login_page1 = get_rms_page(LOGIN_URL)
         login_page1 = self.[LOGIN_URL]
         form = login_page1.forms[0]
         form.field_with(:name => 'login_id').value = @auth_parameters[:AUTH1_ID]
@@ -133,31 +133,20 @@ module Rms
     # logout from rms.
     def close
       @open_rms = false
-      get_with_enc(URL_LOGOUT)
+      get_rms_page(URL_LOGOUT)
     end
 
     # call  rms mainmenu
     def move_to_main_menu
-      get_with_enc(URL_MAIN_MENU)
+      get_rms_page(URL_MAIN_MENU)
     end
 
     # page get and setup encoding.
-    # deparacated.
-    def get_with_enc(*params)
+    def get_rms_page(*params)
       page = RmsPage.rmsnize(get(*params))
-      page.extend RmsPage
       @last_page = page.set_enc
       page
     end
-
-    # page get and setup encoding.
-    def [](*params)
-      page = RmsPage.rmsnize(get(*params))
-#      page.extend RmsPage
-      @last_page = page.set_enc
-      page
-    end
-
 
     # judge url of sigle sign-on
     def is_single_signon_path(path)
