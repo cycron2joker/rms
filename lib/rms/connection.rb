@@ -85,6 +85,7 @@ module Rms
         form.field_with(:name => 'passwd').value = @auth_parameters[:AUTH1_PWD]
 
         debug "R-Login first auth execute."
+        sleep(1)
         login_page2 = form.click_submit_button
 
         form = login_page2.forms[0]
@@ -99,6 +100,7 @@ module Rms
         form.field_with(:name => 'user_passwd').value = @auth_parameters[:AUTH2_PWD]
 
         debug "R-Member login second auth execute."
+        sleep(1)
         announce_page = form.click_submit_button
         form = announce_page.forms[0]
         unless form.field_with(:name => 'action').value.to_s == VAL_R_MEM_LOGIN_SUCCESS
@@ -107,7 +109,7 @@ module Rms
         debug "R-Member second auth successed."
 
         step = "announce-page"
-
+        sleep(1)
         notice_page = form.click_submit_button
         unless notice_page.uri.to_s.index(VAL_ANNOUNCE_SUCCESS_URI)
           raise LoginFailedError.new('Notice Page Move failed.')
@@ -115,6 +117,7 @@ module Rms
         debug "rms announce page passed."
 
         step = "notice-page"
+        sleep(1)
         main_menu_page = notice_page.forms[0].click_submit_button
         
         if main_menu_page.uri.to_s != VAL_MAINMENU_SUCCESS_URI
@@ -122,7 +125,6 @@ module Rms
         end
 
         debug "rms notice page passed, and main menu page called"
-
         # single sign-on for logon rms sub-system
 #      main_menu_html = @current_page.body.to_s.tosjis
 #      lst_img_tag = main_menu_html.scan(/<img src=\"(https:\/\/[^\"]+)\"/i)
@@ -141,7 +143,7 @@ module Rms
           path = img.attributes['src'].to_s 
           if is_single_signon_path(path)
             get(path)
-            sleep(0.3)
+            sleep(1)
           end
         }
         debug "single sign-on end."
