@@ -180,6 +180,32 @@ module Rms
       page
     end
 
+    # 
+    def create_dynamic_form
+      node = {}
+      class << node
+        def search(*args) 
+          []
+        end
+      end
+      node['method'] = 'POST'
+      node['enctype'] = 'application/x-www-form-urlencoded'
+      form = Mechanize::Form.new(node)
+      form.extend RmsForm
+      if block_given?
+        yield form
+      end
+      return form
+    end
+
+    # direct submit form
+    def direct_post(post_url ,form)
+      form.action = post_url
+      page = RmsPage.rmsnize(submit(form, nil, self.request_headers))
+      @last_page = page.set_enc
+      page
+    end
+
     # judge url of sigle sign-on
     def is_single_signon_path(path)
       path.index('login?') || path.index('/auth/?') ||
