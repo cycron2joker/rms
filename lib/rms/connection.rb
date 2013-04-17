@@ -181,7 +181,7 @@ module Rms
       if ::Mechanize::VERSION =~ /^1¥.0/
         page = RmsPage.rmsnize(get(*params))
       else
-        page = RmsPage.rmsnize(get(params))
+        page = RmsPage.rmsnize(get(params[0]))
       end
       @last_page = page.set_enc
       page
