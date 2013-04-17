@@ -177,7 +177,12 @@ module Rms
 
     # page get and setup encoding.
     def get_rms_page(*params)
-      page = RmsPage.rmsnize(get(*params))
+      page = nil
+      if ::Mechanize::VERSION =~ /^1¥.0/
+        page = RmsPage.rmsnize(get(*params))
+      else
+        page = RmsPage.rmsnize(get(params))
+      end
       @last_page = page.set_enc
       page
     end
