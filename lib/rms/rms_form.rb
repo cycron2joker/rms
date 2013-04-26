@@ -18,13 +18,11 @@ module Rms
     end
 
     def RmsForm.rmsnize(page)
-      begin 
-        forms = page.forms
-        if forms && !forms.empty?
-          forms.each {|form|
-            form.extend RmsForm
-          }
-        end
+      forms = page.forms
+      if forms 
+        forms.each {|form|
+          form.extend RmsForm
+        }
       end
       page
     end

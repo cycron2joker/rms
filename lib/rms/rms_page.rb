@@ -21,11 +21,11 @@ module Rms
     end
 
     def RmsPage.rmsnize(page)
-      begin
+#      begin
         page.extend RmsPage
         RmsForm.rmsnize(page.set_enc)
-      rescue
-      end
+#      rescue
+ #     end
       page
     end
 
