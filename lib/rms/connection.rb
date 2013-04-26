@@ -179,11 +179,15 @@ module Rms
     def get_rms_page(*params)
       page = nil
       if ::Mechanize::VERSION =~ /^1¥.0/
-        page = RmsPage.rmsnize(get(*params))
+#        page = RmsPage.rmsnize(get(*params))
+        page = get(*params)
       else
-        page = RmsPage.rmsnize(get(params[0]))
+#        page = RmsPage.rmsnize(get(params[0]))
+        page = get(params[0])
       end
-      @last_page = page.set_enc
+      page = RmsPage.rmsnize(page)
+#      @last_page = page.set_enc
+      @last_page = page
       page
     end
 
