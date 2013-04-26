@@ -20,16 +20,13 @@ module Rms
       self
     end
 
+    # inject RmsPage module
     def RmsPage.rmsnize(page)
-#      begin
       page.extend RmsPage
       page.set_enc
       RmsForm.rmsnize(page)
-#      rescue
- #     end
       page
     end
-
 
   end
 

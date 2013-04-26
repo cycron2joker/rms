@@ -13,10 +13,9 @@ module Rms
 
     def wrap_rms_page(page)
       RmsPage.rmsnize(page)
-#      page.extend RmsPage
-#      page.set_enc
     end
 
+    # inject RmsForm module
     def RmsForm.rmsnize(page)
       forms = page.forms
       if forms 

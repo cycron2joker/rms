@@ -26,9 +26,7 @@ module Rms
 
     URL_MAIN_MENU = VAL_MAINMENU_SUCCESS_URI
 
-
     attr_reader :last_page
-
 
     def initialize(auth1_id ,auth1_pwd ,auth2_id ,auth2_pwd)
       super()
@@ -179,14 +177,11 @@ module Rms
     def get_rms_page(*params)
       page = nil
       if ::Mechanize::VERSION =~ /^1¥.0/
-#        page = RmsPage.rmsnize(get(*params))
         page = get(*params)
       else
-#        page = RmsPage.rmsnize(get(params[0]))
         page = get(params[0])
       end
       page = RmsPage.rmsnize(page)
-#      @last_page = page.set_enc
       @last_page = page
       page
     end
