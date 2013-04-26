@@ -22,8 +22,9 @@ module Rms
 
     def RmsPage.rmsnize(page)
 #      begin
-        page.extend RmsPage
-        RmsForm.rmsnize(page.set_enc)
+      page.extend RmsPage
+      page.set_enc
+      RmsForm.rmsnize(page)
 #      rescue
  #     end
       page
